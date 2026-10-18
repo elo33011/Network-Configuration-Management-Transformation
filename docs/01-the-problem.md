@@ -1,5 +1,7 @@
 # The Problem - Why Classic Network Configuration Management Drifts
 
+![Classic approach - where the source of truth is lost](../diagram/classic-approach-problem.svg)
+
 ## Classic Approach - How It Works
 
 Classic network configuration management treats the CLI template as the design. The workflow is:

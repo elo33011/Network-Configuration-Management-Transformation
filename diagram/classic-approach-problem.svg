@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 610" width="1180" height="610" font-family="Helvetica, Arial, sans-serif">
+  <title>Classic approach: where the source of truth is lost</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#44546a"/></marker>
+    <marker id="d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+    <marker id="s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker>
+  </defs>
+  <rect width="1180" height="610" fill="#ffffff"/>
+  <text x="590" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2933">Classic Approach - Where the Source of Truth Is Lost</text>
+
+  <!-- classic workflow -->
+  <g stroke-width="2">
+    <rect x="40"  y="80" width="200" height="120" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="340" y="80" width="200" height="120" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="640" y="80" width="200" height="120" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="940" y="80" width="200" height="120" rx="8" fill="#eef7ee" stroke="#4c9a5a"/>
+  </g>
+  <g fill="#1f2933" text-anchor="middle">
+    <text x="140" y="108" font-size="16" font-weight="700">1. Design</text>
+    <text x="140" y="136" font-size="12">Diagrams, spreadsheets,</text>
+    <text x="140" y="154" font-size="12">documents.</text>
+    <text x="140" y="178" font-size="12" font-style="italic">Not connected to config</text>
+
+    <text x="440" y="108" font-size="16" font-weight="700">2. CLI Template</text>
+    <text x="440" y="136" font-size="12">Variables filled in per</text>
+    <text x="440" y="154" font-size="12">deployment, kept in the platform.</text>
+    <text x="440" y="178" font-size="12" font-style="italic">No version control, no history</text>
+
+    <text x="740" y="108" font-size="16" font-weight="700">3. Engineer</text>
+    <text x="740" y="136" font-size="12">Logs in to each device,</text>
+    <text x="740" y="154" font-size="12">copy-pastes piece by piece.</text>
+    <text x="740" y="178" font-size="12" font-style="italic">Manual</text>
+
+    <text x="1040" y="108" font-size="16" font-weight="700">4. Device Config</text>
+    <text x="1040" y="136" font-size="12">Running config</text>
+    <text x="1040" y="154" font-size="12">on the device.</text>
+    <text x="1040" y="178" font-size="12" font-style="italic">What it actually is</text>
+  </g>
+  <g stroke="#44546a" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M240,140 H338"/><path d="M540,140 H638"/><path d="M840,140 H938"/>
+  </g>
+  <g fill="#44546a" font-size="11" text-anchor="middle">
+    <text x="290" y="132">written by hand</text>
+    <text x="590" y="119">rendered with</text><text x="590" y="132">values</text>
+    <text x="890" y="132">pasted to</text>
+  </g>
+
+  <!-- challenge 1: drift -->
+  <g stroke-width="2" fill="#fff4e5" stroke="#c2410c">
+    <rect x="40"  y="300" width="200" height="110" rx="8"/>
+    <rect x="940" y="440" width="200" height="90" rx="8"/>
+  </g>
+  <g fill="#1f2933" text-anchor="middle">
+    <text x="140" y="326" font-size="15" font-weight="700">NMS parameters</text>
+    <text x="140" y="348" font-size="12">NTP, SNMP, syslog copied into</text>
+    <text x="140" y="364" font-size="12">templates, values files,</text>
+    <text x="140" y="380" font-size="12">scripts and spreadsheets.</text>
+    <text x="140" y="398" font-size="12" font-style="italic">No owner, no governance</text>
+
+    <text x="1040" y="466" font-size="15" font-weight="700">Break-fix on the device</text>
+    <text x="1040" y="488" font-size="12">Fixed live during an outage.</text>
+    <text x="1040" y="504" font-size="12">Template never updated.</text>
+  </g>
+  <g stroke="#c2410c" stroke-width="2" stroke-dasharray="7 5" fill="none" marker-end="url(#d)">
+    <path d="M240,340 H290 V162 H338"/>
+    <path d="M1100,440 V202"/>
+  </g>
+  <g fill="#c2410c" font-size="11" text-anchor="end">
+    <text x="1092" y="395">changed on the device,</text><text x="1092" y="408">not in the template</text>
+  </g>
+
+  <!-- challenge 2: snowflakes -->
+  <g stroke-width="2" fill="#f3eefe" stroke="#6d28d9">
+    <rect x="340" y="300" width="200" height="110" rx="8"/>
+    <rect x="640" y="300" width="200" height="110" rx="8"/>
+  </g>
+  <g fill="#1f2933" text-anchor="middle">
+    <text x="440" y="326" font-size="15" font-weight="700">Template copy</text>
+    <text x="440" y="348" font-size="12">Copied and modified after a</text>
+    <text x="440" y="364" font-size="12">design change. The original</text>
+    <text x="440" y="380" font-size="12">is never retired.</text>
+
+    <text x="740" y="326" font-size="15" font-weight="700">Automation</text>
+    <text x="740" y="348" font-size="12">Scripts and playbooks read the</text>
+    <text x="740" y="364" font-size="12">platform's template, or their</text>
+    <text x="740" y="380" font-size="12">own private copy of it.</text>
+    <text x="740" y="398" font-size="12" font-style="italic">Automates a snapshot</text>
+  </g>
+  <g stroke="#6d28d9" stroke-width="2" stroke-dasharray="7 5" fill="none">
+    <path d="M400,202 V298" marker-end="url(#s)"/>
+    <path d="M540,360 H638" marker-end="url(#s)"/>
+    <path d="M840,350 H980 V202" marker-end="url(#s)"/>
+  </g>
+  <path d="M520,202 V255 H700 V298" stroke="#44546a" stroke-width="2" fill="none" marker-end="url(#a)"/>
+  <g font-size="11" text-anchor="middle">
+    <text x="372" y="256" fill="#6d28d9" text-anchor="end">design change:</text><text x="372" y="269" fill="#6d28d9" text-anchor="end">a new template</text>
+    <text x="590" y="352" fill="#6d28d9">or a copy</text>
+    <text x="640" y="248" fill="#44546a">reads</text>
+  </g>
+  <text x="972" y="270" font-size="11" fill="#6d28d9" text-anchor="end">pushes a snapshot</text>
+  <text x="972" y="283" font-size="11" fill="#6d28d9" text-anchor="end">of the design</text>
+
+  <!-- legend and result -->
+  <g font-size="12" fill="#1f2933">
+    <rect x="40" y="456" width="14" height="14" rx="3" fill="#fff4e5" stroke="#c2410c" stroke-width="2"/><text x="62" y="468">Challenge 1: configuration drift</text>
+    <rect x="40" y="480" width="14" height="14" rx="3" fill="#f3eefe" stroke="#6d28d9" stroke-width="2"/><text x="62" y="492">Challenge 2: automation built on snowflakes</text>
+  </g>
+  <rect x="40" y="552" width="1100" height="40" rx="8" fill="#f5f5f4" stroke="#a8a29e"/>
+  <text x="590" y="577" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2933">Result: the device config can no longer be correlated with the design. The source of truth is lost.</text>
+</svg>
