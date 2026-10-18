@@ -11,7 +11,7 @@ Classic network configuration management treats the CLI template as the design. 
 
 The templates are stored in a classic execution platform. The platform can store and run them, but it has no version control and no capability to track changes. There is no history of who changed what, when and why.
 
-## What's Wrong With It?
+## Challenge 1 - Configuration Drift
 
 The workflow works on day one. The problem is everything after day one.
 
@@ -20,6 +20,17 @@ The workflow works on day one. The problem is everything after day one.
 - **Partial rollouts** — A change reaches some devices and not others. Nothing records which ones.
 
 Each action is reasonable on its own. Together they cause configuration drift: the actual device configuration can no longer be correlated with the design.
+
+## Challenge 2 - Automation Built on Snowflakes
+
+Automation is usually added on top of this workflow to remove the copy-paste. The scripts, playbooks and workflows are built from the same unmanaged templates, so they inherit the same weakness.
+
+- **Automates an instance, not the design** — The automation deploys whatever the template contained at the time it was written. It captures a snapshot of the design, not the intent behind it.
+- **Templates are unmanaged** — With no version control and no change tracking, nothing says which template is current, or which devices it was last applied to.
+- **Every variation becomes a snowflake** — Site exceptions, break-fix edits and copied-and-modified templates each produce a slightly different result. Automated at scale, the snowflakes are produced faster and in larger numbers.
+- **Automation falls out of sync** — When the design changes, the automation has nothing authoritative to follow. It must be manually rebuilt, and in practice it is not.
+
+Automation applied to unmanaged templates does not fix drift. It automates the drift.
 
 ## The Real Impact - Source of Truth Is Lost
 
@@ -31,4 +42,4 @@ Drift is not just untidy configuration. It removes the answer to the question "w
 
 Once this happens, the source of truth is lost. Audits become manual comparisons, upgrades and migrations carry hidden risk, and troubleshooting slows down because "standard" no longer means anything.
 
-The root cause is the model, not the tooling. Templates are treated as deployment aids rather than as a versioned, authoritative definition of the network. Consistency depends on engineers keeping templates and devices aligned by discipline, and discipline does not scale.
+The root cause is the model, not the tooling. Both challenges come from the same place: templates are treated as deployment aids rather than as a versioned, authoritative definition of the network. Consistency depends on engineers keeping templates and devices aligned by discipline, and discipline does not scale.
