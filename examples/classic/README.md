@@ -61,6 +61,8 @@ An extra ACL entry and a re-enabled port were added directly on the device. Neit
 
 ## Challenge 2 - Automation Built on Snowflakes
 
+Side-by-side with template references: [comparison-dmz-sw-01-vs-sw-02.md](comparison-dmz-sw-01-vs-sw-02.md).
+
 `dmz-sw-01` and `dmz-sw-02` are the same role in the same environment, deployed by the same script. Besides hostname and management IP, they differ in:
 
 ```diff
