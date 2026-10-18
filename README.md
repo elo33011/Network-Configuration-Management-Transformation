@@ -17,6 +17,8 @@ The approach put in place:
 - **Execution platform** — Self-built Ansible platform with a pipeline: Dev, QA and Prod stages, a required deploy and rollback playbook set, a tested rollback, and a change gate for production.
 - **Drift check** — Re-run the playbook in check mode, report drift on a dashboard, and remediate by applying the same playbook again.
 
+An add-on shows how to build new use cases with three agents (architect, developer and code reviewer) under the same governance.
+
 What it does not address: the design itself. It is still not modeled, so drift between the design and the templates remains. The next step is to rewrite the design as a data model with schemas, as in the Automation Native Campus Network Design repo.
 
 ## Contents

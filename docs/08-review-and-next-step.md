@@ -18,6 +18,7 @@ Classic network configuration management treats the CLI template as the design. 
 | 5 | [Execution platform](05-execution-platform.md) | Ansible on a self-built platform. Pipeline with Dev, QA and Prod, a required playbook set, tested rollback, merge rules, release tag and change gate. |
 | 6 | [Worked example](../examples/execution-platform/README.md) | The NTP use case running through the playbook set, the rollback and the gates. |
 | 7 | [Drift check](07-drift-check.md) | Re-run the playbook in check mode to find drift, report it on a dashboard and remediate with the same playbook. |
+| 9 | [Add-on: agentic coding](09-agentic-use-case-development.md) | Three agents (architect, developer, code reviewer) in VS Code build new use cases under the same governance. |
 
 ## How Each Challenge Was Addressed
 

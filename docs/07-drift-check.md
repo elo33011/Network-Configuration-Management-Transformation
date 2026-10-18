@@ -8,7 +8,7 @@ No separate comparison tool is needed. The playbook that deployed the change is 
 
 ## How the Drift Check Works
 
-1. **Run the use case against the device** — The pipeline runs the use case's playbooks against the existing devices without changing them, in check mode.
+1. **Run the use case against the device** — The pipeline runs the use case's `deploy` playbook against the existing devices in check mode. Nothing is changed.
 2. **The playbook compares intent with reality** — It renders the intended config from the template and parameters in Git, and compares it with what is on the device.
 3. **A difference is drift** — If the playbook would change something, or the validation fails, the device no longer matches the source of truth.
 4. **The result is recorded** — The pipeline records the outcome per device and per use case, and sends it to the dashboard.
@@ -40,6 +40,8 @@ The drift data is reported to a dashboard. It turns drift from something found b
 - **Age** — How long a device has been drifted since the drift was first seen.
 
 The classic approach had no answer to "how much of the network matches the design?" The dashboard gives one.
+
+The dashboard in the worked example shows current state, what drifted and a per-run trend. Age needs the time a device was first seen drifted to be kept from run to run, which the example does not do.
 
 ## Remediation - Apply the Same Playbook Again
 

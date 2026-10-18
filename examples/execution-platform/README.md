@@ -130,7 +130,7 @@ fatal: [abc-dev-sw-01]: FAILED! ... "NTP on abc-dev-sw-01 does not match the tem
 
 ## What Is Simulated
 
-- **Devices** are config files. The playbooks edit them with `lineinfile` and `blockinfile`. Real devices would use the vendor's Ansible collection, with the same playbook structure.
+- **Devices** are config files. The playbooks read and rewrite them with `slurp` and `copy`. Real devices would use the vendor's Ansible collection, with the same playbook structure.
 - **Change gate, inventory data store and vault** are stubs.
 - **The pipeline file** is illustrative and not run.
 - **The link to the template repo** is a folder next to the Ansible repo here. In the pipeline it is a checkout of the template repo before any job runs.

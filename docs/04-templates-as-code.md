@@ -98,4 +98,4 @@ Mapped to the challenges in [the problem statement](01-the-problem.md):
 
 ## What Is Still Open
 
-Moving templates and parameters to Git manages the intent. The device is still only compared with that intent if someone checks it. The next content covers the drift check.
+Moving templates and parameters to Git manages the intent. Nothing yet deploys from it in a controlled way, and the device is still only compared with that intent if someone checks it. The next content covers the execution platform that deploys from the repo. The drift check follows it.

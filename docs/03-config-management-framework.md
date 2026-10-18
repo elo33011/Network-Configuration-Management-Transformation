@@ -18,7 +18,7 @@ The two challenges in [the problem statement](01-the-problem.md) are not tooling
 
 How they connect:
 
-- **Design → Template** — The template is the design implemented as config. Every template traces back to a design decision.
+- **Design → Template** — The template is the design implemented as config. A person does this translation by hand, so this is the one link nothing checks yet (see the [review](08-review-and-next-step.md)).
 - **Template → Execution Platform** — The execution platform deploys only from the template. It never holds its own copy.
 - **Execution Platform → Device Config** — The push is the only sanctioned way a config reaches a device.
 - **Template → Drift Check** — The template and parameters, rendered by the playbook, define the intended config.
@@ -36,6 +36,7 @@ How they connect:
 
 ## Where Each Component Is Covered
 
+- **Design** — The gap in this link is covered in the [Review](08-review-and-next-step.md)
 - **Template and NMS parameters** — [Templates as Code](04-templates-as-code.md)
 - **Execution Platform** — [The Execution Platform](05-execution-platform.md), with a [worked example](../examples/execution-platform/README.md)
 - **Drift Check** — [Drift Check](07-drift-check.md), with the same worked example
