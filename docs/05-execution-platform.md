@@ -86,7 +86,3 @@ Mapped to the challenges in [the problem statement](01-the-problem.md):
 - **Snowflakes** — Automation reads the governed templates and NMS parameters, never a private copy, so it is no longer an instance of a forgotten design.
 - **Configuration drift** — Every change to a device comes from the pipeline, from content that is in Git, reviewed and tested.
 - **Unsafe changes** — Prechecks, postchecks, validation and a tested rollback surround every deploy. Production is held behind the change gate.
-
-## What Is Still Open
-
-The platform can now deploy reliably. Nothing yet checks whether a device still matches what was deployed. The next content covers the drift check.
