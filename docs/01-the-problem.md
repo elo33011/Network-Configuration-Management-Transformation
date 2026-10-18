@@ -1,6 +1,6 @@
 # The Problem - Why Classic Network Configuration Management Drifts
 
-![Classic approach - where the source of truth is lost](../diagram/classic-approach-problem.svg)
+![Classic approach - where the inconsistency comes from](../diagram/classic-approach-problem.svg)
 
 ## Classic Approach - How It Works
 
@@ -49,14 +49,23 @@ Automation is usually added on top of this workflow to remove the copy-paste. Th
 
 Automation applied to unmanaged templates does not fix drift. It automates the drift.
 
-## The Real Impact - Source of Truth Is Lost
+## The Real Impact - Inconsistency Causes Outages
 
-Drift is not just untidy configuration. It removes the answer to the question "what should this device look like?"
+Drift is not just untidy configuration, and losing the source of truth is not just a documentation problem. Devices that should be configured the same are not, and inconsistent configuration causes network outages and impact to the business.
+
+- **A change works on some devices and not others** — A device that missed a change behaves differently from its peers. It is the odd one out, and the failure appears when traffic, routing or a failover reaches it.
+- **Redundancy fails when it is needed** — A pair or a path is built to be identical. When one side has drifted, the failover that was designed to protect the service is the moment it breaks.
+- **A "safe" change is not safe** — Changes are tested and approved against the design. Applied to a device that no longer matches the design, the same change gives a different result.
+- **A fix is lost** — A break-fix made on the device is never written back. The next deployment from the template silently removes it, and the original problem returns.
+- **Shared parameters fail quietly** — Devices pointing at an old NTP or syslog server lose time sync and logging, and the gap is found only when something else goes wrong.
+- **Recovery is slower** — During an outage nobody can say what a device should look like, so troubleshooting starts by finding out what is different.
+
+It also removes the answer to the question "what should this device look like?"
 
 - The template may be stale, because a fix was never written back.
 - The device may be the exception, because it missed a change.
 - Neither can be proven right, because no history and no intent were recorded.
 
-Once this happens, the source of truth is lost. Audits become manual comparisons, upgrades and migrations carry hidden risk, and troubleshooting slows down because "standard" no longer means anything.
+Once this happens, the source of truth is lost. Audits become manual comparisons, upgrades and migrations carry hidden risk, and "standard" no longer means anything. The inconsistency is invisible until it causes an incident.
 
 The root cause is the model, not the tooling. Both challenges come from the same place: templates and the parameters they depend on are treated as deployment aids rather than as a versioned, governed, authoritative definition of the network. Consistency depends on engineers keeping templates and devices aligned by discipline, and discipline does not scale.

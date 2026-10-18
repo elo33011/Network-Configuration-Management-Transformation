@@ -5,7 +5,7 @@ source of truth for network configuration.
 
 ## Executive Summary
 
-Classic network configuration management treats the CLI template as the design. Templates sit in an execution platform with no version control, and engineers paste config onto devices by hand. This causes two problems:
+Classic network configuration management treats the CLI template as the design. Templates sit in an execution platform with no version control, and engineers paste config onto devices by hand. This causes two problems, and the inconsistency they create causes network outages and impact:
 
 - **Configuration drift** — Device config can no longer be correlated with the design, including shared NMS parameters (NTP, SNMP, syslog) that have no single home and no governance.
 - **Automation built on snowflakes** — Automation consumes the same unmanaged templates, so it automates an instance of the design, not the design.

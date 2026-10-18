@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 610" width="1180" height="610" font-family="Helvetica, Arial, sans-serif">
-  <title>Classic approach: where the source of truth is lost</title>
+  <title>Classic approach: where the inconsistency comes from</title>
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#44546a"/></marker>
     <marker id="d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
     <marker id="s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker>
   </defs>
   <rect width="1180" height="610" fill="#ffffff"/>
-  <text x="590" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2933">Classic Approach - Where the Source of Truth Is Lost</text>
+  <text x="590" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2933">Classic Approach - Where the Inconsistency Comes From</text>
 
   <!-- classic workflow -->
   <g stroke-width="2">
@@ -106,5 +106,5 @@
     <rect x="40" y="480" width="14" height="14" rx="3" fill="#f3eefe" stroke="#6d28d9" stroke-width="2"/><text x="62" y="492">Challenge 2: automation built on snowflakes</text>
   </g>
   <rect x="40" y="552" width="1100" height="40" rx="8" fill="#f5f5f4" stroke="#a8a29e"/>
-  <text x="590" y="577" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2933">Result: the device config can no longer be correlated with the design. The source of truth is lost.</text>
+  <text x="590" y="577" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2933">Result: inconsistent device config, a lost source of truth, and inconsistency that causes outages.</text>
 </svg>
