@@ -15,11 +15,14 @@ def render(path, values):
     return Template(open(path).read()).render(**values).splitlines()
 
 
+NMS_KEYS = ("ntp_server", "syslog_server", "snmp_community")  # network management system parameters
+
 md = [f"| Section | {la} | {lb} | Why it differs |", "|---|---|---|---|"]
 for kind, pa, pb in (("Baseline", ba, bb), ("Environment", ea, eb)):
     a, b = render(pa, va), render(pb, vb)
     # render B's template with A's values: what is left is template divergence, not device values
     b_same_values = render(pb, {**vb, **va})
+    b_same_nms = render(pb, {**vb, **{k: va[k] for k in NMS_KEYS if k in va}})
     md.append(f"| **{kind}** | `{pa}` | `{pb}` | |")
     for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b).get_opcodes():
         if tag == "equal":
@@ -28,6 +31,7 @@ for kind, pa, pb in (("Baseline", ba, bb), ("Environment", ea, eb)):
             l = a[i1 + k] if i1 + k < i2 else ""
             r = b[j1 + k] if j1 + k < j2 else ""
             template_diff = (l != (b_same_values[j1 + k] if j1 + k < j2 else ""))
-            why = "❌ template divergence" if template_diff else "per-device value"
+            nms_diff = (not template_diff) and l == (b_same_nms[j1 + k] if j1 + k < j2 else "")
+            why = "❌ template divergence" if template_diff else "❌ NMS parameter, no single home" if nms_diff else "per-device value"
             md.append(f"| | `{l}` | `{r}` | {why} |")
 open(out, "w").write("\n".join(md) + "\n")

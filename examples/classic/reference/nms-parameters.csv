@@ -1,0 +1,4 @@
+parameter,value,owner,last_updated
+ntp_server,10.0.0.9,unknown,2021-03
+syslog_server,10.0.0.20,unknown,2022-07
+snmp_community,public123,unknown,2020-11

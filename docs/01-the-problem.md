@@ -9,6 +9,8 @@ Classic network configuration management treats the CLI template as the design. 
 3. Values are filled in per deployment, turning the template into a parameterized template.
 4. A network engineer logs in to each device and copy-pastes the rendered configuration, piece by piece.
 
+The baseline part of the template also carries the network management system (NMS) parameters: NTP, SNMP and syslog. These are shared by every device in every environment.
+
 The templates are stored in a classic execution platform. The platform can store and run them, but it has no version control and no capability to track changes. There is no history of who changed what, when and why.
 
 ## Challenge 1 - Configuration Drift
@@ -32,6 +34,18 @@ Automation is usually added on top of this workflow to remove the copy-paste. Th
 
 Automation applied to unmanaged templates does not fix drift. It automates the drift.
 
+## Challenge 3 - Network Management Parameters Have No Home
+
+NTP, SNMP and syslog values are used by every device, but there is no single location that stores them. They are kept in multiple places: templates, values files, scripts, spreadsheets and the devices themselves.
+
+- **No single location** — The same value is copied into each place that needs it. Nobody can point to the one place that is authoritative.
+- **No governance** — When a value changes, there is no review, no approval and no record of who changed it or why.
+- **Changes are partial** — A new NTP or syslog server is updated in some places and not others. Devices keep pointing at the old server, and the gap is found only when monitoring or logging stops working.
+- **Hard-coded copies hide** — A value typed directly into a template is not visible to anyone updating the values files.
+- **Credentials are copied around** — SNMP community strings are stored in plain text in every one of those places.
+
+These parameters have the widest reach of anything in the configuration, and they have no owner and no home.
+
 ## The Real Impact - Source of Truth Is Lost
 
 Drift is not just untidy configuration. It removes the answer to the question "what should this device look like?"
@@ -42,4 +56,4 @@ Drift is not just untidy configuration. It removes the answer to the question "w
 
 Once this happens, the source of truth is lost. Audits become manual comparisons, upgrades and migrations carry hidden risk, and troubleshooting slows down because "standard" no longer means anything.
 
-The root cause is the model, not the tooling. Both challenges come from the same place: templates are treated as deployment aids rather than as a versioned, authoritative definition of the network. Consistency depends on engineers keeping templates and devices aligned by discipline, and discipline does not scale.
+The root cause is the model, not the tooling. All three challenges come from the same place: templates and the parameters they depend on are treated as deployment aids rather than as a versioned, governed, authoritative definition of the network. Consistency depends on engineers keeping templates and devices aligned by discipline, and discipline does not scale.

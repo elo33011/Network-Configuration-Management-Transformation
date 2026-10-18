@@ -1,4 +1,4 @@
-ntp_server: 10.0.0.10
+ntp_server: 10.0.0.11
 syslog_server: 10.0.0.20
 snmp_community: public123
 mgmt_gateway: 10.1.0.1

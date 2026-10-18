@@ -7,7 +7,7 @@ feature lacp
 feature lldp
 !
 ntp server {{ ntp_server }} use-vrf management
-logging server {{ syslog_server }} use-vrf management
+logging server 10.0.0.25 use-vrf management
 snmp-server user MONITOR network-operator auth sha {{ snmp_auth }}
 !
 aaa authentication login default group tacacs+ local
