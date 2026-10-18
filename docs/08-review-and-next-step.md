@@ -73,5 +73,3 @@ The core flow in that repository is:
 - validation = data model vs deployed config
 
 Applied to this approach, the design stops being a document and becomes the top of the chain, under the same Git, merge request and code owner governance as the rest. The NMS parameters become part of the model. A design change is a change to the model, and it reaches the templates, the playbooks and the devices through the pipeline that already exists. The drift check can then compare the device with the design itself, not only with a template derived from it.
-
-The next content rewrites the design as a model.
