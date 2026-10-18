@@ -54,6 +54,7 @@ The pipeline enforces that every use case provides a defined set of playbooks, a
 | **Deploy** | `deploy-precheck` → `deploy` → `deploy-postcheck` → `deploy-validate` | Check the device is ready, make the change, check the change took effect, validate the result. |
 | **Rollback** | `rollback-precheck` → `rollback` → `rollback-postcheck` → `rollback-validate` | Same four steps, to undo the change. |
 
+- **Validate follows its own action** — `deploy-validate` runs after the deploy, and `rollback-validate` runs after the rollback. Each phase ends with its own validation, so a rollback is checked in the same way a deploy is.
 - **Missing playbooks fail the pipeline** — A use case without the full set cannot progress.
 - **Rollback is mandatory** — The pipeline requires a rollback to be developed, not just a deploy. Every change ships with a way back.
 - **Rollback is tested** — In Dev and QA, the rollback must run after the deploy. A rollback that has never been run is an assumption.
