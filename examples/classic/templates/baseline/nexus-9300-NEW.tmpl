@@ -1,0 +1,22 @@
+! baseline/nexus-9300-NEW.tmpl - copied for the DMZ rollout, "improved" and never merged back
+! Stored in the execution platform - no version, no history.
+hostname {{ hostname }}
+!
+feature ssh
+feature lacp
+feature lldp
+!
+ntp server {{ ntp_server }} use-vrf management
+logging server {{ syslog_server }} use-vrf management
+snmp-server user MONITOR network-operator auth sha {{ snmp_auth }}
+!
+aaa authentication login default group tacacs+ local
+banner motd ^Authorised use only^
+!
+vrf context management
+ ip route 0.0.0.0/0 {{ mgmt_gateway }}
+interface mgmt0
+ vrf member management
+ ip address {{ mgmt_ip }}
+!
+copp profile moderate

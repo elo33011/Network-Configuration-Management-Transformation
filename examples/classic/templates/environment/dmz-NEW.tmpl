@@ -1,0 +1,20 @@
+! environment/dmz-NEW.tmpl - copied after the web tier moved; old one never retired
+no cdp enable
+no feature telnet
+!
+ip access-list DMZ-IN
+ 10 permit tcp any {{ web_subnet }} range 443 8443
+ 20 deny ip any any log
+!
+vlan {{ dmz_vlan }}
+ name DMZ
+!
+interface {{ dmz_ports }}
+ switchport mode access
+ switchport access vlan {{ dmz_vlan }}
+ switchport port-security maximum 1
+ storm-control broadcast level 5
+ ip access-group DMZ-IN in
+!
+interface {{ unused_ports }}
+ shutdown

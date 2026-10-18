@@ -1,52 +1,77 @@
 # Classic Approach - Worked Example
 
-A small, runnable example of the classic workflow and the two challenges described in [the problem statement](../../docs/01-the-problem.md).
+A small, runnable example of the classic workflow and the two challenges described in [the problem statement](../../docs/01-the-problem.md). All devices and values are made up for illustration.
 
-## Files
+## Template Structure - Baseline + Environment
+
+The configuration is split into two layers of CLI templates:
+
+- **Baseline** — specific to the hardware platform (`nexus-9300`). Management, NTP, syslog, SNMP, AAA, banner, CoPP. The same baseline applies in every environment.
+- **Environment** — what the device needs to operate in a given environment. `datacenter` (jumbo MTU, vPC, server VLAN) or `dmz` (ACLs, port-security, storm-control, shut unused ports).
+
+A device is built by rendering one baseline plus one environment template with a values file. A Data Center switch and a DMZ switch get the same baseline and different environment config.
 
 | Path | What it is |
 |---|---|
-| `templates/access-switch.tmpl` | The original parameterized CLI template (Jinja2 syntax). |
-| `templates/access-switch-NEW.tmpl` | A copy, modified after a design change. The original was never retired. |
-| `values/*.yml` | Per-device variable values filled in by the engineer. |
-| `automation/render_and_push.py` | The "automation": renders a template with a values file and pushes it. |
-| `devices/f01-acc-01.intended.cfg` | What the template says device f01 should look like. |
-| `devices/f01-acc-01.running.cfg` | What f01 actually looks like after a break-fix. |
-| `devices/f02-acc-01.deployed.cfg` | Same role as f01, deployed from the NEW template. |
+| `templates/baseline/nexus-9300.tmpl` | Platform baseline. |
+| `templates/environment/datacenter.tmpl` | Data Center environment template. |
+| `templates/environment/dmz.tmpl` | DMZ environment template. |
+| `templates/baseline/nexus-9300-NEW.tmpl` | A copy of the baseline modified for a rollout and never merged back. |
+| `templates/environment/dmz-NEW.tmpl` | A copy of the DMZ template modified after a design change. The original was never retired. |
+| `values/*.yml` | Per-device variables filled in by the engineer. |
+| `automation/render_and_push.py` | The "automation": baseline + environment + values, then push. |
+| `devices/` | Intended, running and deployed configs. |
 
 ## Reproduce
 
 ```bash
 pip install jinja2 pyyaml
-python3 automation/render_and_push.py templates/access-switch.tmpl values/hq-f01-acc-01.yml
+python3 automation/render_and_push.py \
+  templates/baseline/nexus-9300.tmpl templates/environment/dmz.tmpl values/dmz-sw-01.yml
 ```
+
+## The Split Works - dc-sw-01 vs dmz-sw-01
+
+Rendered from the same baseline, the first 20 lines differ only by the per-device values:
+
+```diff
+< hostname abc-dc-sw-01
+> hostname abc-dmz-sw-01
+...
+<  ip address 10.1.0.11/24
+>  ip address 10.1.0.21/24
+```
+
+Everything after the baseline is environment config. The structure is sound. The problem is that both layers are still unmanaged templates.
 
 ## Challenge 1 - Configuration Drift
 
-Compare what the template intended for f01 with what is running on it:
+`dmz-sw-01`, intended (templates) vs running (device) after a break-fix:
 
 ```diff
- vlan 200
-  name VOICE
-+vlan 999
-+ name TEMP-CAMERA-FIX
+  20 deny ip any any log
++ 15 permit tcp any 172.16.40.0/24 eq 8080
  ...
-  switchport mode access
-+ storm-control broadcast level 5
++interface Ethernet1/30
++ no shutdown
++ switchport access vlan 400
 ```
 
-Both lines were added directly on the device during break-fix. Neither exists in any template or values file. The running config can no longer be correlated with the design, and the next deployment from the template will silently remove the fix.
+An extra ACL entry and a re-enabled port were added directly on the device. Neither is in any template or values file, and the second one undoes the "shut unused ports" intent of the DMZ environment. The next deployment from the template silently removes the fix, or nobody knows to check.
 
 ## Challenge 2 - Automation Built on Snowflakes
 
-`f01` and `f02` are the same role (floor access switch), and both were deployed by the same script. Beyond the expected hostname, VLAN and uplink values, they differ in the following ways:
+`dmz-sw-01` and `dmz-sw-02` are the same role in the same environment, deployed by the same script. Besides hostname and management IP, they differ in:
 
 ```diff
-- snmp-server community public123 RO
-+ snmp-server group MONITOR v3 priv
-+ ntp server 10.0.0.11
+- snmp-server community public123 ro
++ snmp-server user MONITOR network-operator auth sha EXAMPLE-ONLY
+- copp profile strict
++ copp profile moderate
+-  10 permit tcp any 172.16.40.0/24 eq 443
++  10 permit tcp any 172.16.40.0/24 range 443 8443
+-  storm-control broadcast level 1
++  storm-control broadcast level 5
 ```
 
-The script is correct in both cases. It faithfully rendered whichever template it was pointed at. The problem is that two templates now claim to be the standard for the same role, and nothing records which is current. The automation is an instance of the design at the time each template was written, so it produces snowflakes at the speed of automation.
-
-Note also that the NEW template needs a variable (`ntp_server_2`) the old values files do not have, so every existing values file must be hand-edited before the new template can be used.
+The script is correct in both cases. It rendered whichever baseline and environment templates it was pointed at. Now two baselines and two DMZ templates claim to be the standard, and nothing records which is current. The "same baseline everywhere" property exists only by convention, and the first copy-and-modify breaks it. The new baseline also needs a `snmp_auth` variable that existing values files do not have.

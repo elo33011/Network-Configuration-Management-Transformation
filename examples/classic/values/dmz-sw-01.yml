@@ -1,0 +1,10 @@
+ntp_server: 10.0.0.10
+syslog_server: 10.0.0.20
+snmp_community: public123
+mgmt_gateway: 10.1.0.1
+hostname: abc-dmz-sw-01
+mgmt_ip: 10.1.0.21/24
+dmz_vlan: 400
+web_subnet: 172.16.40.0/24
+dmz_ports: Ethernet1/1-24
+unused_ports: Ethernet1/25-48

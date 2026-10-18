@@ -1,0 +1,17 @@
+! environment/datacenter.tmpl - config for operating in the Data Center
+system jumbomtu 9216
+feature vpc
+feature interface-vlan
+!
+vlan {{ server_vlan }}
+ name SERVERS
+!
+interface port-channel{{ vpc_peer_id }}
+ description VPC-PEER-LINK
+ switchport mode trunk
+ vpc peer-link
+!
+interface {{ server_ports }}
+ switchport mode access
+ switchport access vlan {{ server_vlan }}
+ spanning-tree port type edge
