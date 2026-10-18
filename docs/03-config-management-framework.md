@@ -2,7 +2,7 @@
 
 ## Start With the Framework
 
-The three challenges in [the problem statement](01-the-problem.md) are not tooling problems, so a new tool does not fix them. They come from the relationship between the components. In the classic approach, the design, the template, the execution platform and the device config exist, but nothing keeps them aligned. The approach starts by defining each component and how it relates to the others.
+The two challenges in [the problem statement](01-the-problem.md) are not tooling problems, so a new tool does not fix them. They come from the relationship between the components. In the classic approach, the design, the template, the execution platform and the device config exist, but nothing keeps them aligned. The approach starts by defining each component and how it relates to the others.
 
 ![Configuration Management Framework](../diagram/config-management-framework.svg)
 
