@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 470" width="1180" height="470" font-family="Helvetica, Arial, sans-serif">
+  <title>Building use cases with three agents</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#44546a"/></marker>
+    <marker id="d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+  </defs>
+  <rect width="1180" height="470" fill="#ffffff"/>
+  <text x="590" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2933">Building a Use Case with Three Agents</text>
+
+  <g stroke-width="2">
+    <rect x="30"  y="110" width="180" height="120" rx="8" fill="#eef7ee" stroke="#4c9a5a"/>
+    <rect x="265" y="110" width="180" height="120" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="500" y="110" width="180" height="120" rx="8" fill="#eef7ee" stroke="#4c9a5a"/>
+    <rect x="735" y="110" width="180" height="120" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="970" y="110" width="180" height="120" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="970" y="310" width="180" height="100" rx="8" fill="#eef7ee" stroke="#4c9a5a"/>
+    <rect x="620" y="310" width="290" height="100" rx="8" fill="#f5f5f4" stroke="#78716c"/>
+  </g>
+  <g fill="#1f2933" text-anchor="middle">
+    <text x="120" y="138" font-size="15" font-weight="700">Requirement</text>
+    <text x="120" y="162" font-size="12">A person describes</text>
+    <text x="120" y="178" font-size="12">what the use case</text>
+    <text x="120" y="194" font-size="12">must do.</text>
+
+    <text x="355" y="138" font-size="15" font-weight="700">1. Architect agent</text>
+    <text x="355" y="162" font-size="12">Learns the requirement,</text>
+    <text x="355" y="178" font-size="12">proposes the design.</text>
+    <text x="355" y="206" font-size="12" font-style="italic">Writes DESIGN.md</text>
+
+    <text x="590" y="138" font-size="15" font-weight="700">Approve design</text>
+    <text x="590" y="162" font-size="12">A person reviews</text>
+    <text x="590" y="178" font-size="12">DESIGN.md before</text>
+    <text x="590" y="194" font-size="12">anything is built.</text>
+
+    <text x="825" y="138" font-size="15" font-weight="700">2. Developer agent</text>
+    <text x="825" y="162" font-size="12">Builds all eight playbooks,</text>
+    <text x="825" y="178" font-size="12">inventory and variables.</text>
+    <text x="825" y="206" font-size="12" font-style="italic">Runs the checks</text>
+
+    <text x="1060" y="138" font-size="15" font-weight="700">3. Reviewer agent</text>
+    <text x="1060" y="162" font-size="12">Read-only. Checks the code</text>
+    <text x="1060" y="178" font-size="12">against the design and rules.</text>
+    <text x="1060" y="206" font-size="12" font-style="italic">Approve / changes requested</text>
+
+    <text x="1060" y="338" font-size="15" font-weight="700">Merge request</text>
+    <text x="1060" y="362" font-size="12">Code owner and a person</text>
+    <text x="1060" y="378" font-size="12">approve. Never an agent.</text>
+
+    <text x="765" y="338" font-size="15" font-weight="700">Pipeline</text>
+    <text x="765" y="362" font-size="12">Dev, QA, master, then Prod by release tag,</text>
+    <text x="765" y="378" font-size="12">behind the change gate.</text>
+  </g>
+  <g stroke="#44546a" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M210,170 H263"/><path d="M445,170 H498"/><path d="M680,170 H733"/><path d="M915,170 H968"/>
+    <path d="M1060,232 V308"/><path d="M968,360 H912"/>
+  </g>
+  <path d="M1060,108 V68 H825 V108" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 5" fill="none" marker-end="url(#d)"/>
+  <text x="942" y="62" text-anchor="middle" font-size="11" fill="#c2410c">changes requested: the developer fixes, the reviewer re-reviews</text>
+  <path d="M590,108 V78 H355 V108" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 5" fill="none" marker-end="url(#d)"/>
+  <text x="472" y="72" text-anchor="middle" font-size="11" fill="#c2410c">design rejected: back to the architect</text>
+
+  <g font-size="12" fill="#1f2933">
+    <rect x="30" y="316" width="14" height="14" rx="3" fill="#eef3fb" stroke="#3b6ea8" stroke-width="2"/><text x="52" y="328">Agent</text>
+    <rect x="30" y="340" width="14" height="14" rx="3" fill="#eef7ee" stroke="#4c9a5a" stroke-width="2"/><text x="52" y="352">Person</text>
+  </g>
+  <rect x="30" y="430" width="1120" height="28" rx="8" fill="#f5f5f4" stroke="#a8a29e"/>
+  <text x="590" y="449" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2933">Agents work on a branch. They never merge, tag a release or touch master.</text>
+</svg>

@@ -29,6 +29,7 @@ What it does not address: the design itself. It is still not modeled, so drift b
 6. [Worked example: NTP use case on the execution platform](examples/execution-platform/README.md)
 7. [Drift Check: Re-running the Playbook Against the Device](docs/07-drift-check.md)
 8. [Review: What the Approach Fixed, and What It Does Not](docs/08-review-and-next-step.md)
+9. [Add-on: Building Use Cases with Agentic Coding](docs/09-agentic-use-case-development.md)
 
 ## Who this is for
 
