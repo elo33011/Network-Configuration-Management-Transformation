@@ -9,7 +9,8 @@ source of truth for network configuration.
 2. [Worked example: baseline + environment templates](examples/classic/README.md)
 3. [The Approach: A Configuration Management Framework](docs/03-config-management-framework.md)
 4. [Templates as Code: Moving Templates to Git](docs/04-templates-as-code.md)
-5. _Coming next_
+5. [The Execution Platform: Ansible, Built In-House](docs/05-execution-platform.md)
+6. _Coming next_
 
 ## Who this is for
 

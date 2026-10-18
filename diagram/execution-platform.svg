@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1260 620" width="1260" height="620" font-family="Helvetica, Arial, sans-serif">
+  <title>Execution platform and pipeline</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#44546a"/></marker>
+    <marker id="d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c2410c"/></marker>
+  </defs>
+  <rect width="1260" height="620" fill="#ffffff"/>
+  <text x="630" y="34" text-anchor="middle" font-size="20" font-weight="700" fill="#1f2933">Execution Platform - Pipeline and Promotion</text>
+
+  <!-- stages -->
+  <g stroke-width="2">
+    <rect x="20"   y="70" width="220" height="150" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="350"  y="70" width="220" height="150" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="680"  y="70" width="220" height="150" rx="8" fill="#eef7ee" stroke="#4c9a5a"/>
+    <rect x="1010" y="70" width="220" height="150" rx="8" fill="#fff4e5" stroke="#c2410c"/>
+  </g>
+  <g fill="#1f2933" text-anchor="middle">
+    <text x="130" y="98" font-size="16" font-weight="700">Dev</text>
+    <text x="130" y="120" font-size="12" font-style="italic">branch: dev</text>
+    <text x="130" y="146" font-size="12">Dev physical devices</text>
+    <text x="130" y="164" font-size="12">No integration with</text>
+    <text x="130" y="180" font-size="12">firm systems</text>
+    <text x="130" y="204" font-size="12" font-weight="700">deploy, then rollback</text>
+
+    <text x="460" y="98" font-size="16" font-weight="700">QA</text>
+    <text x="460" y="120" font-size="12" font-style="italic">branch: qa</text>
+    <text x="460" y="146" font-size="12">Same physical devices</text>
+    <text x="460" y="164" font-size="12">Integrated: inventory</text>
+    <text x="460" y="180" font-size="12">data store, vault</text>
+    <text x="460" y="204" font-size="12" font-weight="700">deploy, then rollback</text>
+
+    <text x="790" y="98" font-size="16" font-weight="700">Master</text>
+    <text x="790" y="120" font-size="12" font-style="italic">branch: master</text>
+    <text x="790" y="152" font-size="12">Golden source</text>
+    <text x="790" y="172" font-size="12">Only tested content</text>
+    <text x="790" y="188" font-size="12">gets here</text>
+
+    <text x="1120" y="98" font-size="16" font-weight="700">Prod</text>
+    <text x="1120" y="120" font-size="12" font-style="italic">trigger: release tag</text>
+    <text x="1120" y="146" font-size="12">Change management</text>
+    <text x="1120" y="164" font-size="12">gate checked first</text>
+    <text x="1120" y="204" font-size="12" font-weight="700">Gate fails = no run</text>
+  </g>
+  <g stroke="#44546a" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M240,145 H348"/><path d="M570,145 H678"/><path d="M900,145 H1008"/>
+  </g>
+  <g fill="#44546a" font-size="11" text-anchor="middle">
+    <text x="295" y="126">merge after</text><text x="295" y="139">successful test</text>
+    <text x="625" y="126">merge after</text><text x="625" y="139">successful test</text>
+    <text x="955" y="132">release tag</text>
+  </g>
+
+  <!-- playbook set -->
+  <text x="20" y="262" font-size="14" font-weight="700" fill="#1f2933">Required playbook set per use case, executed in this order by the pipeline</text>
+  <g stroke="#3b6ea8" stroke-width="1.5" fill="#eef3fb">
+    <rect x="140" y="280" width="190" height="40" rx="6"/><rect x="360" y="280" width="190" height="40" rx="6"/>
+    <rect x="580" y="280" width="190" height="40" rx="6"/><rect x="800" y="280" width="190" height="40" rx="6"/>
+  </g>
+  <g stroke="#c2410c" stroke-width="1.5" fill="#fff4e5">
+    <rect x="140" y="390" width="190" height="40" rx="6"/><rect x="360" y="390" width="190" height="40" rx="6"/>
+    <rect x="580" y="390" width="190" height="40" rx="6"/><rect x="800" y="390" width="190" height="40" rx="6"/>
+  </g>
+  <g fill="#1f2933" font-size="13" text-anchor="middle" font-family="Menlo, Consolas, monospace">
+    <text x="235" y="305">deploy-precheck</text><text x="455" y="305">deploy</text><text x="675" y="305">deploy-postcheck</text><text x="895" y="305">deploy-validate</text>
+    <text x="235" y="415">rollback-precheck</text><text x="455" y="415">rollback</text><text x="675" y="415">rollback-postcheck</text><text x="895" y="415">rollback-validate</text>
+  </g>
+  <g fill="#1f2933" font-size="13" font-weight="700"><text x="20" y="305">Deploy</text><text x="20" y="415">Rollback</text></g>
+  <g stroke="#44546a" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M330,300 H358"/><path d="M550,300 H578"/><path d="M770,300 H798"/>
+    <path d="M330,410 H358"/><path d="M550,410 H578"/><path d="M770,410 H798"/>
+  </g>
+  <path d="M895,320 V355 H235 V388" stroke="#c2410c" stroke-width="2" stroke-dasharray="7 5" fill="none" marker-end="url(#d)"/>
+  <text x="565" y="349" text-anchor="middle" font-size="11" fill="#c2410c">Dev and QA: rollback must run after deploy, so rollback is tested</text>
+  <text x="1010" y="305" font-size="11" fill="#44546a">Pipeline fails if</text>
+  <text x="1010" y="320" font-size="11" fill="#44546a">any playbook is missing</text>
+
+  <!-- platform components -->
+  <text x="20" y="478" font-size="14" font-weight="700" fill="#1f2933">Platform components</text>
+  <g stroke-width="2">
+    <rect x="20"  y="495" width="340" height="100" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="460" y="495" width="340" height="100" rx="8" fill="#eef3fb" stroke="#3b6ea8"/>
+    <rect x="900" y="495" width="340" height="100" rx="8" fill="#eef7ee" stroke="#4c9a5a"/>
+  </g>
+  <g fill="#1f2933" text-anchor="middle">
+    <text x="190" y="522" font-size="15" font-weight="700">Template repository</text>
+    <text x="190" y="546" font-size="12">Templates + NMS parameters</text>
+    <text x="190" y="564" font-size="12">Code owner governed</text>
+    <text x="630" y="522" font-size="15" font-weight="700">Ansible repository</text>
+    <text x="630" y="546" font-size="12">Use cases: playbooks, inventory, variables</text>
+    <text x="630" y="564" font-size="12">Modules, plugins</text>
+    <text x="1070" y="522" font-size="15" font-weight="700">Dedicated Git runners</text>
+    <text x="1070" y="546" font-size="12">Execute the pipeline jobs:</text>
+    <text x="1070" y="564" font-size="12">playbooks and required scripts</text>
+  </g>
+  <g stroke="#44546a" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M360,545 H458"/><path d="M800,545 H898"/>
+  </g>
+  <g fill="#44546a" font-size="11" text-anchor="middle">
+    <text x="410" y="530">linked</text><text x="410" y="568">visible to playbooks</text>
+    <text x="850" y="530">pipeline</text><text x="850" y="568">runs on</text>
+  </g>
+</svg>
