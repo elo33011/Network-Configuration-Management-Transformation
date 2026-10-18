@@ -40,6 +40,7 @@ These parameters have the widest reach of anything in the configuration, and the
 Automation is usually added on top of this workflow to remove the copy-paste. The scripts, playbooks and workflows are built from the same unmanaged templates, so they inherit the same weakness.
 
 - **Automates an instance, not the design** — The automation deploys whatever the template contained at the time it was written. It captures a snapshot of the design, not the intent behind it.
+- **Consumes templates from wherever they sit** — The automation reads templates from the legacy execution platform, or from its own repository where a private copy was taken. Either way, the templates are disconnected from the design intent. Nothing links them back to the design, so a design change does not reach the automation.
 - **Templates are unmanaged** — With no version control and no change tracking, nothing says which template is current, or which devices it was last applied to.
 - **Every variation becomes a snowflake** — Site exceptions, break-fix edits and copied-and-modified templates each produce a slightly different result. Automated at scale, the snowflakes are produced faster and in larger numbers.
 - **Automation falls out of sync** — When the design changes, the automation has nothing authoritative to follow. It must be manually rebuilt, and in practice it is not.
