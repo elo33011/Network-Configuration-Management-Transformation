@@ -1,0 +1,11 @@
+hostname: abc-hq-f01-acc-01
+ntp_server: 10.0.0.10
+syslog_server: 10.0.0.20
+snmp_community: public123
+data_vlan: 100
+voice_vlan: 200
+access_ports: Gi1/0/1-48
+uplink_1: Te1/1/1
+uplink_2: Te1/1/2
+agg_1: abc-hq-agg-01
+agg_2: abc-hq-agg-02
