@@ -1,6 +1,6 @@
 # Network Configuration Management Transformation
 
-My journey from CLI templates and copy-paste to a version-controlled
+The journey from CLI templates and copy-paste to a version-controlled
 source of truth for network configuration.
 
 ## Executive Summary
