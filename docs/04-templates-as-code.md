@@ -34,7 +34,7 @@ A new template version no longer means a new copy of the template. The `nexus-93
 
 ## Code Owners - Approval Based on Ownership
 
-Not everyone can approve a change to every template. The repo uses a code owners file to map each template to the team that owns it. The MR can only be approved by the owner of the files it touches.
+Not everyone can approve a change to every template or parameter file. The repo uses a code owners file to map each file to the team that owns it. The MR can only be approved by the owner of the files it touches.
 
 Example (illustrative team names, GitLab-style `CODEOWNERS`):
 
@@ -47,16 +47,45 @@ templates/environment/datacenter.tmpl   @dc-network-team
 
 [Environment - DMZ]
 templates/environment/dmz.tmpl          @security-network-team
+
+[NMS Parameters]
+parameters/ntp.yml           @infrastructure-services-team
+parameters/syslog.yml        @monitoring-team
+parameters/snmp.yml          @monitoring-team
 ```
 
 How this works in practice:
 
 - **Baseline** — Owned by the team responsible for the hardware platform. A change here affects every environment, so it needs their approval.
 - **Environment** — Each environment template is owned by the team accountable for that environment, such as Data Center or DMZ.
+- **NMS parameters** — Each parameter file is owned by the team that runs that service, such as the monitoring team for syslog and SNMP.
 - **A change touching several templates** — Needs approval from each owner involved.
 - **The author cannot approve their own change** — Ownership decides who approves, and the approver is never the author.
 
 This gives governance by construction. The question "who is allowed to change this?" is answered in a file under version control, and enforced by the platform on every MR.
+
+## Network Management Parameters - Same Approach
+
+The NMS parameters (NTP, SNMP, syslog) are handled the same way as templates. They are stored in the Git repo as data, in separate YAML files, and a change to them goes through the same branch, MR and merge workflow.
+
+```text
+parameters/
+├── ntp.yml
+├── syslog.yml
+└── snmp.yml
+```
+
+```yaml
+# parameters/ntp.yml
+ntp_servers:
+  - 10.0.0.10
+  - 10.0.0.11
+```
+
+- **One location per parameter** — Each value is defined once, in one file. Templates reference the variable. A value is no longer copied into per-device values files, scripts or spreadsheets, and it is no longer hard-coded in a template.
+- **Separate files by concern** — NTP, syslog and SNMP are changed for different reasons, by different owners. Separate files let each have its own owner and its own review.
+- **Same governance** — A change to `ntp.yml` is a change to code. It needs a branch, an MR and the approval of the file's code owner.
+- **Credentials are referenced, not stored** — Sensitive values such as the SNMP community or credentials are held as a reference to a secret store. The YAML file does not contain the secret itself.
 
 ## What This Solves
 
@@ -64,8 +93,9 @@ Mapped to the challenges in [the problem statement](01-the-problem.md):
 
 - **Configuration drift** — The repo's default branch is the standard, so "which template is current" has one answer. A change made on a device during break-fix is promoted back by an MR, with review, instead of being lost.
 - **Snowflakes** — Copy-and-modify is replaced by branch-and-merge. Variations are visible in history and in review, not hidden in separate files.
-- **Governance** — Ownership of each template is explicit, and approval is enforced.
+- **Governance** — Ownership of each template and each parameter file is explicit, and approval is enforced.
+- **NMS parameters with no home** — Each parameter has one file in the repo and one owner. A change is reviewed, approved and recorded, and a value cannot be changed in one place and missed in another.
 
 ## What Is Still Open
 
-Moving templates to Git manages the templates. The device is still only compared with the template if someone checks it, and the NMS parameters (NTP, SNMP, syslog) still need a defined home. The next content covers those.
+Moving templates and parameters to Git manages the intent. The device is still only compared with that intent if someone checks it. The next content covers the drift check.
