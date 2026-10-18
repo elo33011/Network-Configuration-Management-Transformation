@@ -10,7 +10,7 @@ This add-on uses Claude in VS Code to build use cases with three agents, each wi
 
 ## Setup
 
-Claude runs in VS Code through the Claude Code extension. Two things in the Ansible repository give it the platform's rules:
+Claude runs in VS Code through the Claude Code extension. Two things in the Ansible repository give it the platform's rules, and they are the core of the harness described below:
 
 | File | What it gives Claude |
 |---|---|
@@ -18,6 +18,25 @@ Claude runs in VS Code through the Claude Code extension. Two things in the Ansi
 | [`.claude/agents/`](../examples/execution-platform/ansible-repo/.claude/agents/) | The three agents, one Markdown file each. |
 
 Both live in the repository. The agents are code under version control, changed by merge request like everything else, so every developer on the team gets the same three agents. In VS Code, open the Ansible repository folder and run `/agents` in Claude to see them.
+
+## The Harness
+
+The agents are only part of what makes this work. Around the model sits a **harness**: the instructions, roles, permissions and checks that keep an agent's work inside the platform's rules. The model writes code. The harness decides what it is told, what it is allowed to touch, and how its work is verified. Here the harness is made of five parts, all in the repository:
+
+| Harness part | What it is here | What it controls |
+|---|---|---|
+| **Instructions** | [`CLAUDE.md`](../examples/execution-platform/ansible-repo/CLAUDE.md) | What every agent is told about the platform: the required playbook set and order, where templates and parameters come from, idempotency, tested rollback, no credentials. |
+| **Roles** | The three files in [`.claude/agents/`](../examples/execution-platform/ansible-repo/.claude/agents/) | What each agent is for, and what it must not do. |
+| **Permissions** | The `tools` line in each agent file | What each agent can do. The architect can only write the design, the reviewer has no write tools, and the developer is told to stay inside the use case folder. |
+| **Verification** | `check_usecase.py`, `run_usecase.sh` and [`review_checks.sh`](../examples/execution-platform/ansible-repo/scripts/review_checks.sh) | Whether the work is correct, checked by running it and not by the agent's own report. |
+| **Human gates** | Design approval, the merge request and code owner, the pipeline and the change gate | Whether the work is allowed to go forward. |
+
+Two things follow from this:
+
+- **The rules do not depend on the model.** An agent that ignores an instruction is still caught by the verification and the human gates. A better model needs less catching, but the platform does not rely on it.
+- **The harness is code.** Instructions, roles and checks are files under version control, reviewed by merge request like the playbooks. Improving how the agents work is a change to the harness, and a failure found in review becomes a new check in `review_checks.sh` so it is caught mechanically next time.
+
+The harness here is deliberately small. It does not yet use tool-level permission settings or hooks that block unsafe commands. The `tools` lines and the instructions carry that load today, and those controls are the natural next addition.
 
 ## The Three Agents
 
