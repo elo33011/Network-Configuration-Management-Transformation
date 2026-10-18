@@ -31,12 +31,12 @@ usecases/
 │   ├── playbooks/
 │   │   ├── deploy-precheck.yml
 │   │   ├── deploy.yml
-│   │   ├── deploy-postcheck.yml
 │   │   ├── deploy-validate.yml
+│   │   ├── deploy-postcheck.yml
 │   │   ├── rollback-precheck.yml
 │   │   ├── rollback.yml
-│   │   ├── rollback-postcheck.yml
-│   │   └── rollback-validate.yml
+│   │   ├── rollback-validate.yml
+│   │   └── rollback-postcheck.yml
 │   ├── inventory/
 │   └── vars/
 └── <use-case-b>/
@@ -51,10 +51,10 @@ The pipeline enforces that every use case provides a defined set of playbooks, a
 
 | Phase | Playbooks, in the order they run | Purpose |
 |---|---|---|
-| **Deploy** | `deploy-precheck` → `deploy` → `deploy-postcheck` → `deploy-validate` | Check the device is ready, make the change, check the change took effect, validate the result. |
-| **Rollback** | `rollback-precheck` → `rollback` → `rollback-postcheck` → `rollback-validate` | Same four steps, to undo the change. |
+| **Deploy** | `deploy-precheck` → `deploy` → `deploy-validate` → `deploy-postcheck` | Check the device is ready, make the change, validate the change straight after it, then run the final post-change checks. |
+| **Rollback** | `rollback-precheck` → `rollback` → `rollback-validate` → `rollback-postcheck` | Same four steps, to undo the change. |
 
-- **Validate follows its own action** — `deploy-validate` runs after the deploy, and `rollback-validate` runs after the rollback. Each phase ends with its own validation, so a rollback is checked in the same way a deploy is.
+- **Validate follows its own action** — `deploy-validate` runs straight after the deploy, and `rollback-validate` runs straight after the rollback. A rollback is checked in the same way a deploy is.
 - **Missing playbooks fail the pipeline** — A use case without the full set cannot progress.
 - **Rollback is mandatory** — The pipeline requires a rollback to be developed, not just a deploy. Every change ships with a way back.
 - **Rollback is tested** — In Dev and QA, the rollback must run after the deploy. A rollback that has never been run is an assumption.
