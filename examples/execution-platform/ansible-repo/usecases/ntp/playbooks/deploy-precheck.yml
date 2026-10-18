@@ -1,0 +1,26 @@
+# deploy-precheck: is the device ready, and can we get back to where we started?
+- hosts: all
+  gather_facts: false
+  vars_files:
+    - ../vars/main.yml
+  tasks:
+    - name: Load NTP parameters from the template repo
+      ansible.builtin.include_vars:
+        file: "{{ ntp_parameters_file }}"
+    - name: Render the intended NTP config from the template
+      ansible.builtin.set_fact:
+        intended_ntp: "{{ (lookup('ansible.builtin.template', ntp_template) | trim).splitlines() }}"
+    - name: Device config is present
+      ansible.builtin.stat:
+        path: "{{ device_config }}"
+      register: dev
+    - name: Assert device config exists and NTP parameters are defined
+      ansible.builtin.assert:
+        that:
+          - dev.stat.exists
+          - ntp_servers | length > 0
+    - name: Take a backup so rollback has something to restore
+      ansible.builtin.copy:
+        src: "{{ device_config }}"
+        dest: "{{ device_config }}{{ backup_suffix }}"
+        remote_src: true

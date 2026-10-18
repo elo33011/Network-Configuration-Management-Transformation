@@ -1,0 +1,15 @@
+# rollback-validate: straight after the rollback, are the NTP lines back to the original?
+- hosts: all
+  gather_facts: false
+  vars_files:
+    - ../vars/main.yml
+  tasks:
+    - name: Read device config and backup
+      ansible.builtin.slurp:
+        src: "{{ item }}"
+      loop: ["{{ device_config }}", "{{ device_config }}{{ backup_suffix }}"]
+      register: files
+    - ansible.builtin.assert:
+        that: >-
+          (files.results[0].content | b64decode).splitlines() | select('match', '^ntp server ') | list
+          == (files.results[1].content | b64decode).splitlines() | select('match', '^ntp server ') | list

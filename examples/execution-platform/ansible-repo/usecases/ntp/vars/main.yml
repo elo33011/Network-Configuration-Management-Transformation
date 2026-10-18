@@ -1,0 +1,5 @@
+# NTP servers and the template come from the linked template repo, never from a copy.
+template_repo: "{{ playbook_dir }}/../../../../template-repo"
+ntp_template: "{{ template_repo }}/templates/baseline/ntp.j2"
+ntp_parameters_file: "{{ template_repo }}/parameters/ntp.yml"
+backup_suffix: .pre-ntp-change

@@ -1,0 +1,17 @@
+# deploy-postcheck: nothing else changed. Everything except the NTP lines must equal the backup.
+- hosts: all
+  gather_facts: false
+  vars_files:
+    - ../vars/main.yml
+  tasks:
+    - name: Read device config and backup
+      ansible.builtin.slurp:
+        src: "{{ item }}"
+      loop: ["{{ device_config }}", "{{ device_config }}{{ backup_suffix }}"]
+      register: files
+    - name: Assert only NTP lines changed
+      vars:
+        after: "{{ (files.results[0].content | b64decode).splitlines() | reject('match', '^(ntp server |! (BEGIN|END) NTP)') | list }}"
+        before: "{{ (files.results[1].content | b64decode).splitlines() | reject('match', '^ntp server ') | list }}"
+      ansible.builtin.assert:
+        that: after == before

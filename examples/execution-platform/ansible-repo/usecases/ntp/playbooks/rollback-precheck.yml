@@ -1,0 +1,12 @@
+# rollback-precheck: can we roll back?
+- hosts: all
+  gather_facts: false
+  vars_files:
+    - ../vars/main.yml
+  tasks:
+    - name: Backup exists
+      ansible.builtin.stat:
+        path: "{{ device_config }}{{ backup_suffix }}"
+      register: bak
+    - ansible.builtin.assert:
+        that: bak.stat.exists

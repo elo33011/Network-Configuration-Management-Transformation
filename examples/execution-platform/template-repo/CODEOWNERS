@@ -1,0 +1,5 @@
+[Baseline]
+templates/baseline/          @network-platform-team
+
+[NMS Parameters]
+parameters/ntp.yml           @infrastructure-services-team

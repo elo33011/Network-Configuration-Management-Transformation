@@ -1,0 +1,9 @@
+# rollback-postcheck: the device is exactly as it was before the change.
+- hosts: all
+  gather_facts: false
+  vars_files:
+    - ../vars/main.yml
+  tasks:
+    - name: Compare device config with backup
+      ansible.builtin.command: "cmp {{ device_config }} {{ device_config }}{{ backup_suffix }}"
+      changed_when: false

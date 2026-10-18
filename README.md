@@ -10,7 +10,8 @@ source of truth for network configuration.
 3. [The Approach: A Configuration Management Framework](docs/03-config-management-framework.md)
 4. [Templates as Code: Moving Templates to Git](docs/04-templates-as-code.md)
 5. [The Execution Platform: Ansible, Built In-House](docs/05-execution-platform.md)
-6. _Coming next_
+6. [Worked example: NTP use case on the execution platform](examples/execution-platform/README.md)
+7. _Coming next_
 
 ## Who this is for
 

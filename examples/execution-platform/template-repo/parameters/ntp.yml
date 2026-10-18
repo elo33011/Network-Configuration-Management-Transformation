@@ -1,0 +1,4 @@
+# NTP servers for every device. One file, one owner (see CODEOWNERS).
+ntp_servers:
+  - 10.0.0.10
+  - 10.0.0.11

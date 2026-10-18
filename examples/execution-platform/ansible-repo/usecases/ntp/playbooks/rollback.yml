@@ -1,0 +1,11 @@
+# rollback: restore the pre-change config.
+- hosts: all
+  gather_facts: false
+  vars_files:
+    - ../vars/main.yml
+  tasks:
+    - name: Restore the backup
+      ansible.builtin.copy:
+        src: "{{ device_config }}{{ backup_suffix }}"
+        dest: "{{ device_config }}"
+        remote_src: true
