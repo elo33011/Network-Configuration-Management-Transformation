@@ -70,7 +70,7 @@ In Dev and QA the script runs the deploy phase and then the rollback phase, as t
 
 ```text
 === deploy-precheck (dev)    ok=5 changed=1 failed=0
-=== deploy (dev)             ok=4 changed=2 failed=0
+=== deploy (dev)             ok=5 changed=1 failed=0
 === deploy-validate (dev)    ok=4 changed=0 failed=0
 === deploy-postcheck (dev)   ok=2 changed=0 failed=0
 === rollback-precheck (dev)  ok=2 changed=0 failed=0
