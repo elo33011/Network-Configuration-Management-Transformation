@@ -1,36 +1,34 @@
-# The Problem: When the Template Is Not the Truth
+# The Problem - Why Classic Network Configuration Management Drifts
 
-## The classic workflow
+## Classic Approach - How It Works
 
-For most of my career, network configuration management followed a familiar pattern.
+Classic network configuration management treats the CLI template as the design. The workflow is:
 
-1. **Design the network.** An architect or engineer decides on the topology, routing, VLANs, security policy, and so on.
-2. **Write a CLI template.** The design is turned into configuration snippets, with the site-specific parts replaced by variables: hostnames, IP addresses, VLAN IDs, and interface names.
-3. **Fill in the variables.** For each deployment, an engineer supplies the values, turning the generic template into a parameterized one.
-4. **Paste it onto the device.** The engineer logs in to each device, one at a time, and copies and pastes the rendered configuration piece by piece.
+1. Network design is agreed — topology, routing, VLANs, security policy.
+2. A CLI template is created from the design. Site-specific values are replaced by variables, such as hostname, IP address, VLAN ID and interface name.
+3. Values are filled in per deployment, turning the template into a parameterized template.
+4. A network engineer logs in to each device and copy-pastes the rendered configuration, piece by piece.
 
-The templates themselves lived in a traditional execution platform. It stored them and ran them, but it had no version control, no history of who changed what, and no way to compare today's template with last quarter's.
+The templates are stored in a classic execution platform. The platform can store and run them, but it has no version control and no capability to track changes. There is no history of who changed what, when and why.
 
-This workflow works, up to a point. The trouble starts after day one.
+## What's Wrong With It?
 
-## Where it breaks: configuration drift
+The workflow works on day one. The problem is everything after day one.
 
-Networks don't stand still, and each kind of change widens the gap between design and reality.
+- **Design changes** — Either the existing template is updated and redeployed, or a new template is created next to the old one. Both leave no clear lineage of which version is the standard.
+- **Break-fix changes** — Under outage pressure, the fix is made directly on the device. The template is never updated.
+- **Partial rollouts** — A change reaches some devices and not others. Nothing records which ones.
 
-- **Design changes.** Sometimes the engineer updates the template and deploys it. Sometimes they create a new template instead, so now there are two versions of the "standard" with no clear lineage.
-- **Break-fix changes.** At 2 a.m. during an outage, nobody edits a template first. The engineer fixes the problem directly on the device, and the template never hears about it.
-- **Partial rollouts.** A change goes to some devices and not others. The template says one thing, half the estate says another, and nothing records which half.
+Each action is reasonable on its own. Together they cause configuration drift: the actual device configuration can no longer be correlated with the design.
 
-Each of these is reasonable on its own. Together they produce **configuration drift**: the running config on a device can no longer be traced back to the design that was meant to produce it.
+## The Real Impact - Source of Truth Is Lost
 
-## The real cost: the lost source of truth
+Drift is not just untidy configuration. It removes the answer to the question "what should this device look like?"
 
-Drift is more than untidy configs. It means the question "what *should* this device look like?" no longer has a reliable answer.
+- The template may be stale, because a fix was never written back.
+- The device may be the exception, because it missed a change.
+- Neither can be proven right, because no history and no intent were recorded.
 
-- The template may be stale, because it wasn't updated after a fix.
-- The device may be the odd one out, because it missed a change.
-- Neither can be proven right, because nothing records history or intent.
+Once this happens, the source of truth is lost. Audits become manual comparisons, upgrades and migrations carry hidden risk, and troubleshooting slows down because "standard" no longer means anything.
 
-Once that happens, the source of truth is gone. Audits turn into manual comparisons. Upgrades and migrations carry hidden risk, because you don't know what is really on the devices. Troubleshooting slows down, because "standard" no longer means anything. Every new change adds to the problem.
-
-The tooling wasn't the root cause. The *model* was: templates treated as one-off deployment aids, not as a versioned, authoritative definition of the network.
+The root cause is the model, not the tooling. Templates are treated as deployment aids rather than as a versioned, authoritative definition of the network. Consistency depends on engineers keeping templates and devices aligned by discipline, and discipline does not scale.
