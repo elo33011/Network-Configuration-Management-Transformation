@@ -12,7 +12,8 @@ source of truth for network configuration.
 5. [The Execution Platform: Ansible, Built In-House](docs/05-execution-platform.md)
 6. [Worked example: NTP use case on the execution platform](examples/execution-platform/README.md)
 7. [Drift Check: Re-running the Playbook Against the Device](docs/07-drift-check.md)
-8. _Coming next_
+8. [Review: What the Approach Fixed, and What It Does Not](docs/08-review-and-next-step.md)
+9. _Next: the design as a data model_
 
 ## Who this is for
 
