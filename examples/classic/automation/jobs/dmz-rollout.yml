@@ -1,0 +1,5 @@
+# Automation job for new DMZ switches. It points at its own copy of the template, not at the
+# execution platform's template, and nothing ties either one back to the design.
+name: dmz-rollout
+baseline: templates/baseline/nexus-9300.tmpl
+environment: automation/private-copy/dmz.tmpl

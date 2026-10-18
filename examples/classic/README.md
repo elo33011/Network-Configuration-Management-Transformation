@@ -20,6 +20,8 @@ A device is built by rendering one baseline plus one environment template with a
 | `templates/environment/dmz-NEW.tmpl` | A copy of the DMZ template modified after a design change. The original was never retired. |
 | `values/*.yml` | Per-device variables filled in by the engineer. These include a copy of the NMS parameters (NTP, syslog, SNMP). |
 | `reference/nms-parameters.csv` | The spreadsheet where someone once recorded the NMS parameters. |
+| `automation/jobs/dmz-rollout.yml` | An automation job. It points at its own private copy of the DMZ template. |
+| `automation/private-copy/dmz.tmpl` | The automation's private copy of the DMZ template, taken from the execution platform, edited locally and never synced. |
 | `automation/render_and_push.py` | The "automation": baseline + environment + values, then push. It also carries its own default SNMP community. |
 | `devices/` | Intended, running and deployed configs. |
 
@@ -109,6 +111,23 @@ These parameters have the widest reach of anything in the config, and they have 
 -  storm-control broadcast level 1
 +  storm-control broadcast level 5
 ```
+
+### Automation Reads Its Own Copy
+
+The automation does not have to read the template from the execution platform. `automation/jobs/dmz-rollout.yml` points at `automation/private-copy/dmz.tmpl`, a copy taken when the job was written and then edited locally. Comparing it with the template in the execution platform:
+
+```diff
+- ! environment/dmz.tmpl - config for operating in the DMZ
++ ! dmz.tmpl - private copy for the automation job, edited locally and never synced with the platform
+  ip access-list DMZ-IN
+   10 permit tcp any {{ web_subnet }} eq 443
++  15 permit tcp any {{ web_subnet }} eq 80
+   20 deny ip any any log
+ ...
+-  storm-control broadcast level 1
+```
+
+Every DMZ switch the job builds gets this version: it allows port 80 and has no storm-control. Neither the platform's template nor the design says that should be the case. A change to the DMZ template, or to the design behind it, never reaches this job, because nothing connects them.
 
 ### Side by Side - dmz-sw-01 vs dmz-sw-02
 

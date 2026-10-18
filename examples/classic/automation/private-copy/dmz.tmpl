@@ -1,0 +1,20 @@
+! dmz.tmpl - private copy for the automation job, edited locally and never synced with the platform
+no cdp enable
+no feature telnet
+!
+ip access-list DMZ-IN
+ 10 permit tcp any {{ web_subnet }} eq 443
+ 15 permit tcp any {{ web_subnet }} eq 80
+ 20 deny ip any any log
+!
+vlan {{ dmz_vlan }}
+ name DMZ
+!
+interface {{ dmz_ports }}
+ switchport mode access
+ switchport access vlan {{ dmz_vlan }}
+ switchport port-security maximum 1
+ ip access-group DMZ-IN in
+!
+interface {{ unused_ports }}
+ shutdown
