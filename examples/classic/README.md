@@ -61,8 +61,6 @@ An extra ACL entry and a re-enabled port were added directly on the device. Neit
 
 ## Challenge 2 - Automation Built on Snowflakes
 
-Side-by-side with template references: [comparison-dmz-sw-01-vs-sw-02.md](comparison-dmz-sw-01-vs-sw-02.md).
-
 `dmz-sw-01` and `dmz-sw-02` are the same role in the same environment, deployed by the same script. Besides hostname and management IP, they differ in:
 
 ```diff
@@ -75,5 +73,38 @@ Side-by-side with template references: [comparison-dmz-sw-01-vs-sw-02.md](compar
 -  storm-control broadcast level 1
 +  storm-control broadcast level 5
 ```
+
+### Side by Side - dmz-sw-01 vs dmz-sw-02
+
+Same role, same environment (DMZ), same hardware platform, deployed by the same script. Only differing lines are shown. Each device section lists the template it was rendered from. A difference is either a **per-device value** (expected, e.g. hostname and management IP) or a **template divergence** (the templates themselves disagree, which is the snowflake).
+
+| Section | abc-dmz-sw-01 | abc-dmz-sw-02 | Why it differs |
+|---|---|---|---|
+| **Baseline** | `templates/baseline/nexus-9300.tmpl` | `templates/baseline/nexus-9300-NEW.tmpl` | |
+| | `! baseline/nexus-9300.tmpl - hardware-platform baseline (identical for every environment)` | `! baseline/nexus-9300-NEW.tmpl - copied for the DMZ rollout, "improved" and never merged back` | ❌ template divergence |
+| | `hostname abc-dmz-sw-01` | `hostname abc-dmz-sw-02` | per-device value |
+| | `snmp-server community public123 ro` | `snmp-server user MONITOR network-operator auth sha EXAMPLE-ONLY` | ❌ template divergence |
+| | ` ip address 10.1.0.21/24` | ` ip address 10.1.0.22/24` | per-device value |
+| | `copp profile strict` | `copp profile moderate` | ❌ template divergence |
+| **Environment** | `templates/environment/dmz.tmpl` | `templates/environment/dmz-NEW.tmpl` | |
+| | `! environment/dmz.tmpl - config for operating in the DMZ` | `! environment/dmz-NEW.tmpl - copied after the web tier moved; old one never retired` | ❌ template divergence |
+| | ` 10 permit tcp any 172.16.40.0/24 eq 443` | ` 10 permit tcp any 172.16.40.0/24 range 443 8443` | ❌ template divergence |
+| | ` storm-control broadcast level 1` | ` storm-control broadcast level 5` | ❌ template divergence |
+
+**Reading it**
+
+- 2 of the 8 differing lines are per-device values. The other 6 come from the templates.
+- Each device section points at a different template file. Nothing records which one is the standard.
+- The divergence cannot be spotted from the device config alone. It takes a manual diff of both templates.
+
+Regenerate the table (printed to stdout) with:
+
+```bash
+python3 automation/compare.py /dev/stdout \
+  abc-dmz-sw-01 templates/baseline/nexus-9300.tmpl templates/environment/dmz.tmpl values/dmz-sw-01.yml \
+  abc-dmz-sw-02 templates/baseline/nexus-9300-NEW.tmpl templates/environment/dmz-NEW.tmpl values/dmz-sw-02.yml
+```
+
+### Why It Matters
 
 The script is correct in both cases. It rendered whichever baseline and environment templates it was pointed at. Now two baselines and two DMZ templates claim to be the standard, and nothing records which is current. The "same baseline everywhere" property exists only by convention, and the first copy-and-modify breaks it. The new baseline also needs a `snmp_auth` variable that existing values files do not have.
