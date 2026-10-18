@@ -6,12 +6,12 @@ A runnable example of the [execution platform](../../docs/05-execution-platform.
 
 ```text
 execution-platform/
+├── .gitlab-ci.yml                     # pipeline: structure -> dev -> qa -> prod (illustrative, not executed)
 ├── template-repo/                     # the governed repo from "templates as code", linked in
 │   ├── templates/baseline/ntp.j2      #   NTP template
 │   ├── parameters/ntp.yml             #   NTP servers: one file, one owner
 │   └── CODEOWNERS
 ├── ansible-repo/
-│   ├── .gitlab-ci.yml                 # pipeline: structure -> dev -> qa -> prod (illustrative, not executed)
 │   ├── ansible.cfg
 │   ├── scripts/
 │   │   ├── check_usecase.py           # fails the pipeline if the playbook set is incomplete
