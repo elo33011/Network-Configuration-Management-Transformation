@@ -1,0 +1,49 @@
+{
+  "run_id": "run-02",
+  "time": "2026-10-18 20:12 UTC",
+  "source_of_truth_version": "26ffe154",
+  "records": [
+    {
+      "device": "abc-dev-sw-01",
+      "environment": "dev",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    },
+    {
+      "device": "abc-dev-sw-02",
+      "environment": "dev",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    },
+    {
+      "device": "abc-qa-sw-01",
+      "environment": "qa",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    },
+    {
+      "device": "abc-qa-sw-02",
+      "environment": "qa",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    },
+    {
+      "device": "abc-prod-sw-01",
+      "environment": "prod",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    },
+    {
+      "device": "abc-prod-sw-02",
+      "environment": "prod",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    }
+  ]
+}

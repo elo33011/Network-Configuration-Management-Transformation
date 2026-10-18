@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NTP Drift Dashboard</title>
+<style>
+  :root {
+    color-scheme: light;
+    --surface: #fcfcfb; --card: #ffffff; --line: #e4e3df;
+    --text: #0b0b0b; --text-2: #52514e; --text-3: #75746f;
+    --insync: #8a8983; --drift: #d03b3b; --good: #0ca30c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --surface: #1a1a19; --card: #222221; --line: #343432;
+      --text: #f0efec; --text-2: #c3c2b7; --text-3: #9a998f;
+      --insync: #6b6a64; --drift: #d03b3b; --good: #0ca30c;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface: #1a1a19; --card: #222221; --line: #343432;
+    --text: #f0efec; --text-2: #c3c2b7; --text-3: #9a998f;
+    --insync: #6b6a64; --drift: #d03b3b; --good: #0ca30c;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--surface); color: var(--text);
+         font: 14px/1.45 -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 40px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--text-2); margin: 0 0 20px; }
+  .sub code, td code { font-family: Menlo, Consolas, monospace; font-size: 12px; }
+  .grid { display: grid; gap: 16px; }
+  .kpis { grid-template-columns: repeat(3, 1fr); margin-bottom: 16px; }
+  .charts { grid-template-columns: 1.3fr 1fr; margin-bottom: 16px; }
+  @media (max-width: 760px) { .kpis, .charts { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  .label { color: var(--text-2); font-size: 13px; }
+  .value { font-size: 40px; font-weight: 700; line-height: 1.1; margin: 4px 0; display: flex; align-items: center; gap: 10px; }
+  .icon { width: 22px; height: 22px; flex: none; }
+  .note { color: var(--text-2); font-size: 12px; }
+  h2 { font-size: 15px; margin: 0 0 2px; }
+  .legend { display: flex; gap: 16px; color: var(--text-2); font-size: 12px; margin: 6px 0 10px; }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  svg text { fill: var(--text-2); font-size: 12px; font-family: inherit; }
+  svg .val { fill: var(--text); font-weight: 600; }
+  svg .grid { stroke: var(--line); stroke-width: 1; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; color: var(--text-2); font-weight: 600; font-size: 12px; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: 0; }
+  .status { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; white-space: nowrap; }
+  .status svg { width: 16px; height: 16px; }
+  .diff { font-family: Menlo, Consolas, monospace; font-size: 12px; white-space: pre-wrap; margin: 0; color: var(--text); }
+  .scroll { overflow-x: auto; }
+  details { margin-top: 12px; color: var(--text-2); font-size: 12px; }
+  summary { cursor: pointer; }
+  #tip { position: fixed; pointer-events: none; background: var(--text); color: var(--surface); padding: 6px 9px;
+         border-radius: 6px; font-size: 12px; opacity: 0; transition: opacity .1s; z-index: 5; max-width: 260px; }
+  .hit { cursor: default; }
+</style>
+</head>
+<body>
+<main>
+  <h1>NTP drift dashboard</h1>
+  <p class="sub" id="sub"></p>
+
+  <div class="grid kpis" id="kpis"></div>
+
+  <div class="grid charts">
+    <section class="card">
+      <h2>Drift by environment</h2>
+      <div class="note">Devices in the latest drift check. Each block is one device.</div>
+      <div class="legend"><span><i style="background:var(--insync)"></i>In sync</span><span><i style="background:var(--drift)"></i>Drifted</span></div>
+      <div id="envChart"></div>
+    </section>
+    <section class="card">
+      <h2>Drifted devices per run</h2>
+      <div class="note">Each drift check run, oldest to latest.</div>
+      <div class="legend"><span><i style="background:var(--drift)"></i>Drifted devices</span></div>
+      <div id="runChart"></div>
+    </section>
+  </div>
+
+  <section class="card">
+    <h2>Device detail</h2>
+    <div class="note">Drifted devices first. The difference is what the playbook would change to bring the device back to the source of truth.</div>
+    <div class="scroll"><table id="detail"></table></div>
+    <details><summary>Chart data as a table</summary><div class="scroll"><table id="data"></table></div></details>
+  </section>
+</main>
+<div id="tip"></div>
+
+<script>
+const RUNS = [{"run_id": "run-01", "time": "2026-10-18 20:12 UTC", "source_of_truth_version": "26ffe154", "records": [{"device": "abc-dev-sw-01", "environment": "dev", "use_case": "ntp", "result": "in sync", "difference": []}, {"device": "abc-dev-sw-02", "environment": "dev", "use_case": "ntp", "result": "drifted", "difference": ["-ntp server 10.0.0.99 use-vrf management", "+ntp server 10.0.0.11 use-vrf management"]}, {"device": "abc-qa-sw-01", "environment": "qa", "use_case": "ntp", "result": "in sync", "difference": []}, {"device": "abc-qa-sw-02", "environment": "qa", "use_case": "ntp", "result": "drifted", "difference": ["-ntp server 10.0.0.50 use-vrf management"]}, {"device": "abc-prod-sw-01", "environment": "prod", "use_case": "ntp", "result": "drifted", "difference": ["-ntp server 10.0.0.9 use-vrf management", "+! BEGIN NTP (managed by pipeline)", "+ntp server 10.0.0.10 use-vrf management", "+ntp server 10.0.0.11 use-vrf management", "+! END NTP (managed by pipeline)"]}, {"device": "abc-prod-sw-02", "environment": "prod", "use_case": "ntp", "result": "in sync", "difference": []}]}];
+const forced = new URLSearchParams(location.search).get('theme');
+if (forced === 'light' || forced === 'dark') document.documentElement.dataset.theme = forced;
+const latest = RUNS[RUNS.length - 1];
+const prev = RUNS.length > 1 ? RUNS[RUNS.length - 2] : null;
+const count = (run, r) => run.records.filter(x => x.result === r).length;
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+const ICON_OK = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--good)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/></svg>';
+const ICON_DRIFT = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="var(--drift)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg>';
+
+document.getElementById('sub').innerHTML =
+  `Run <code>${esc(latest.run_id)}</code> · ${esc(latest.time)} · compared against source of truth version <code>${esc(latest.source_of_truth_version)}</code>`;
+
+// KPI tiles
+const total = latest.records.length, ok = count(latest, 'in sync'), dr = count(latest, 'drifted');
+const prevDr = prev ? count(prev, 'drifted') : null;
+const delta = prevDr === null ? `${dr} of ${total} devices differ from the source of truth` : dr === prevDr ? 'Same as previous run' : `Was ${prevDr} in previous run`;
+document.getElementById('kpis').innerHTML = `
+  <div class="card"><div class="label">Devices checked</div><div class="value">${total}</div><div class="note">${new Set(latest.records.map(r => r.environment)).size} environments · use case ntp</div></div>
+  <div class="card"><div class="label">In sync</div><div class="value">${ICON_OK}${ok}</div><div class="note">${Math.round(100 * ok / total)}% match the source of truth</div></div>
+  <div class="card"><div class="label">Drifted</div><div class="value">${ICON_DRIFT}${dr}</div><div class="note">${delta}</div></div>`;
+
+// tooltip
+const tip = document.getElementById('tip');
+function bindTips(root) {
+  root.querySelectorAll('[data-tip]').forEach(el => {
+    el.addEventListener('mousemove', e => { tip.textContent = el.dataset.tip; tip.style.left = (e.clientX + 12) + 'px'; tip.style.top = (e.clientY + 12) + 'px'; tip.style.opacity = 1; });
+    el.addEventListener('mouseleave', () => tip.style.opacity = 0);
+  });
+}
+
+// chart 1: stacked horizontal bar per environment, one block per device
+(function () {
+  const envs = ['dev', 'qa', 'prod'];
+  const W = 560, rowH = 44, left = 48, top = 6, block = 150, gap = 2, bar = 24;
+  const H = top + envs.length * rowH + 4;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Devices in sync and drifted per environment">`;
+  envs.forEach((env, i) => {
+    const recs = latest.records.filter(r => r.environment === env).sort((a, b) => a.result.localeCompare(b.result) * -1);
+    const y = top + i * rowH + (rowH - bar) / 2;
+    s += `<text x="0" y="${y + 17}">${env}</text>`;
+    s += `<line class="grid" x1="${left}" x2="${left}" y1="${y - 6}" y2="${y + bar + 6}"/>`;
+    recs.forEach((r, k) => {
+      const x = left + k * (block + gap);
+      const color = r.result === 'drifted' ? 'var(--drift)' : 'var(--insync)';
+      s += `<rect class="hit" data-tip="${esc(r.device)}: ${r.result}" x="${x}" y="${y}" width="${block}" height="${bar}" rx="4" fill="${color}"/>`;
+    });
+    const d = recs.filter(r => r.result === 'drifted').length;
+    s += `<text class="val" x="${left + recs.length * (block + gap) + 10}" y="${y + 17}">${d} of ${recs.length} drifted</text>`;
+  });
+  document.getElementById('envChart').innerHTML = s + '</svg>';
+  bindTips(document.getElementById('envChart'));
+})();
+
+// chart 2: drifted devices per run (columns)
+(function () {
+  const W = 400, H = 190, left = 30, bottom = 28, top = 20;
+  const vals = RUNS.map(r => count(r, 'drifted'));
+  const max = Math.max(4, ...vals);
+  const plotH = H - bottom - top, bw = 24, step = (W - left) / RUNS.length;
+  let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Drifted devices per run">`;
+  [0, max / 2, max].forEach(t => {
+    const y = top + plotH - (t / max) * plotH;
+    s += `<line class="grid" x1="${left}" x2="${W}" y1="${y}" y2="${y}"/><text x="0" y="${y + 4}">${t}</text>`;
+  });
+  RUNS.forEach((r, i) => {
+    const h = (vals[i] / max) * plotH, cx = left + step * i + step / 2, y = top + plotH - h;
+    if (vals[i] > 0) s += `<path class="hit" data-tip="${esc(r.run_id)}: ${vals[i]} drifted" d="M${cx - bw / 2},${top + plotH} V${y + 4} a4,4 0 0 1 4,-4 h${bw - 8} a4,4 0 0 1 4,4 V${top + plotH} z" fill="var(--drift)"/>`;
+    s += `<text class="val" x="${cx}" y="${y - 6}" text-anchor="middle">${vals[i]}</text>`;
+    s += `<text x="${cx}" y="${H - 8}" text-anchor="middle">${esc(r.run_id)}</text>`;
+  });
+  document.getElementById('runChart').innerHTML = s + '</svg>';
+  bindTips(document.getElementById('runChart'));
+})();
+
+// detail table
+const order = { drifted: 0, error: 1, 'in sync': 2 };
+const rows = latest.records.slice().sort((a, b) => order[a.result] - order[b.result] || a.device.localeCompare(b.device));
+document.getElementById('detail').innerHTML =
+  '<tr><th>Status</th><th>Device</th><th>Environment</th><th>Use case</th><th>Difference</th></tr>' +
+  rows.map(r => `<tr><td><span class="status">${(r.result === 'in sync' ? ICON_OK : ICON_DRIFT).replace('class="icon"', '')}${r.result === 'in sync' ? 'In sync' : 'Drifted'}</span></td>
+    <td><code>${esc(r.device)}</code></td><td>${esc(r.environment)}</td><td>${esc(r.use_case)}</td>
+    <td>${r.difference.length ? `<pre class="diff">${esc(r.difference.join('\n'))}</pre>` : '<span class="note">No difference</span>'}</td></tr>`).join('');
+
+// chart data as table
+document.getElementById('data').innerHTML =
+  '<tr><th>Run</th><th>Time</th><th>Devices</th><th>In sync</th><th>Drifted</th></tr>' +
+  RUNS.map(r => `<tr><td>${esc(r.run_id)}</td><td>${esc(r.time)}</td><td>${r.records.length}</td><td>${count(r, 'in sync')}</td><td>${count(r, 'drifted')}</td></tr>`).join('');
+</script>
+</body>
+</html>

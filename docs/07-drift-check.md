@@ -62,3 +62,7 @@ Mapped to the challenges in [the problem statement](01-the-problem.md):
 - **Configuration drift** — Drift is found by a scheduled run, measured on a dashboard and fixed by the same playbook. The break-fix loop is closed: the change is detected, and then either reverted or promoted into the source of truth.
 - **NMS parameters** — A device pointing at an old NTP or syslog server shows up as drift against `parameters/`, without anyone having to check.
 - **Source of truth** — The question "what should this device look like?" has an answer, and "does it?" has an answer too.
+
+## Worked Example
+
+The [NTP worked example](../examples/execution-platform/README.md#drift-check-dashboard-and-remediation) runs this end to end: it drifts three devices, finds them with a check-mode run, shows them on a dashboard, remediates them with the same playbook and checks again.

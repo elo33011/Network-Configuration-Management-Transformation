@@ -1,4 +1,5 @@
-# deploy: make the change.
+# deploy: make the change. Idempotent: a run that finds nothing to change reports changed=0.
+# Run with --check --diff it changes nothing and reports what it would change: that is the drift check.
 - hosts: all
   gather_facts: false
   vars_files:
@@ -10,14 +11,17 @@
     - name: Render the intended NTP config from the template
       ansible.builtin.set_fact:
         intended_ntp: "{{ (lookup('ansible.builtin.template', ntp_template) | trim).splitlines() }}"
-    - name: Remove existing NTP server lines
-      ansible.builtin.lineinfile:
-        path: "{{ device_config }}"
-        regexp: '^ntp server '
-        state: absent
-    - name: Add the intended NTP server lines
-      ansible.builtin.blockinfile:
-        path: "{{ device_config }}"
-        marker: "! {mark} NTP (managed by pipeline)"
-        insertafter: '^feature ssh'
-        block: "{{ intended_ntp | join('\n') }}"
+    - name: Read device config
+      ansible.builtin.slurp:
+        src: "{{ device_config }}"
+      register: cfg
+    - name: Build the config with the intended NTP block (idempotent)
+      vars:
+        base: "{{ (cfg.content | b64decode).splitlines() | reject('match', '^(ntp server |! (BEGIN|END) NTP)') | list }}"
+        at: "{{ base.index('feature ssh') + 1 }}"
+      ansible.builtin.set_fact:
+        new_config: "{{ base[:at | int] + ['! BEGIN NTP (managed by pipeline)'] + intended_ntp + ['! END NTP (managed by pipeline)'] + base[at | int:] }}"
+    - name: Write the config if it differs from the device
+      ansible.builtin.copy:
+        content: "{{ new_config | join('\n') }}\n"
+        dest: "{{ device_config }}"

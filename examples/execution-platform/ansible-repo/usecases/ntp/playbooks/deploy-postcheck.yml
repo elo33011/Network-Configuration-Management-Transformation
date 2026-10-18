@@ -12,6 +12,6 @@
     - name: Assert only NTP lines changed
       vars:
         after: "{{ (files.results[0].content | b64decode).splitlines() | reject('match', '^(ntp server |! (BEGIN|END) NTP)') | list }}"
-        before: "{{ (files.results[1].content | b64decode).splitlines() | reject('match', '^ntp server ') | list }}"
+        before: "{{ (files.results[1].content | b64decode).splitlines() | reject('match', '^(ntp server |! (BEGIN|END) NTP)') | list }}"
       ansible.builtin.assert:
         that: after == before

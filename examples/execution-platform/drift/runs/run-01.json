@@ -1,0 +1,60 @@
+{
+  "run_id": "run-01",
+  "time": "2026-10-18 20:12 UTC",
+  "source_of_truth_version": "26ffe154",
+  "records": [
+    {
+      "device": "abc-dev-sw-01",
+      "environment": "dev",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    },
+    {
+      "device": "abc-dev-sw-02",
+      "environment": "dev",
+      "use_case": "ntp",
+      "result": "drifted",
+      "difference": [
+        "-ntp server 10.0.0.99 use-vrf management",
+        "+ntp server 10.0.0.11 use-vrf management"
+      ]
+    },
+    {
+      "device": "abc-qa-sw-01",
+      "environment": "qa",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    },
+    {
+      "device": "abc-qa-sw-02",
+      "environment": "qa",
+      "use_case": "ntp",
+      "result": "drifted",
+      "difference": [
+        "-ntp server 10.0.0.50 use-vrf management"
+      ]
+    },
+    {
+      "device": "abc-prod-sw-01",
+      "environment": "prod",
+      "use_case": "ntp",
+      "result": "drifted",
+      "difference": [
+        "-ntp server 10.0.0.9 use-vrf management",
+        "+! BEGIN NTP (managed by pipeline)",
+        "+ntp server 10.0.0.10 use-vrf management",
+        "+ntp server 10.0.0.11 use-vrf management",
+        "+! END NTP (managed by pipeline)"
+      ]
+    },
+    {
+      "device": "abc-prod-sw-02",
+      "environment": "prod",
+      "use_case": "ntp",
+      "result": "in sync",
+      "difference": []
+    }
+  ]
+}
