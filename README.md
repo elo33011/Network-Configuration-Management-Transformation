@@ -1,7 +1,6 @@
 # Network Configuration Management Transformation
 
-The journey from CLI templates and copy-paste to a version-controlled
-source of truth for network configuration.
+Its always nice and clean to build something new from stretch, however this is not the case in real world brownfield which loads of contraints are assoicated. This article describes the journey to transform network configuration management from classic CLI templates and copy-paste deployment approach to a version-controlled source of truth and automated executions for network configuration. 
 
 ## Executive Summary
 
